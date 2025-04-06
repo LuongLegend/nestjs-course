@@ -6,13 +6,13 @@ import {
 } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { StudentModule } from './student/student.module';
 import { ClassModule } from './class/class.module';
 import { LoggerMiddleware } from './middleware/logger.middleware';
 import { UserModule } from './modules/user/user.module';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
-  imports: [StudentModule, ClassModule, UserModule],
+  imports: [ClassModule, UserModule, AuthModule],
   controllers: [AppController],
   providers: [AppService],
 })
