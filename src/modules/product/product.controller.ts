@@ -6,11 +6,16 @@ import {
   Patch,
   Param,
   Delete,
+  ValidationPipe,
+  UsePipes,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { Product } from '../../entities/product.entity';
+import { CreateProductDto } from './dto/create-product.dto';
+import { ValidateProductIdPipe } from './pipes/ValidateProductIdPipe.pipe';
 
 @Controller('product')
+@UsePipes(new ValidationPipe())
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
@@ -19,8 +24,13 @@ export class ProductController {
     return this.productService.findAll();
   }
 
+  @Get(':id')
+  getOne(@Param('id', ValidateProductIdPipe) id: number) {
+    return this.productService.findOne(id);
+  }
+
   @Post()
-  createProduct(@Body() body: Product) {
+  createProduct(@Body() body: CreateProductDto) {
     return this.productService.createProduct(body);
   }
 
