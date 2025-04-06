@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { AuthService } from '../auth/auth.service';
 
@@ -16,13 +25,22 @@ export class UserController {
   }
 
   @Get(':id')
-  getOneUser(@Param('id') id: string) {
-    return `user Id: ${id}`;
+  getOneUser(@Param('id') id: number) {
+    return this.userService.getUserById(id);
   }
 
   @Post()
   create(@Body() body: any) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-    return body;
+    return this.userService.createUser(body);
+  }
+
+  @Patch(':id')
+  update(@Param('id') id: number, @Body() body: any) {
+    return this.userService.updateUser(id, body);
+  }
+
+  @Delete(':id')
+  remove(@Param('id') id: number) {
+    return this.userService.deleteUser(id);
   }
 }
