@@ -37,9 +37,8 @@ import { Product } from './entities/product.entity';
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(LoggerMiddleware).forRoutes(
-      //{ path: 'student/{*splat}', method: RequestMethod.ALL },
-      { path: 'class', method: RequestMethod.ALL },
-    );
+    consumer
+      .apply(LoggerMiddleware)
+      .forRoutes({ path: 'product/*', method: RequestMethod.ALL });
   }
 }

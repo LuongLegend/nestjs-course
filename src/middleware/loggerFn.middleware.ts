@@ -5,6 +5,6 @@ export function loggerMiddleware(
   res: Response,
   next: NextFunction,
 ) {
-  console.log(req.originalUrl);
+//  console.log(req.originalUrl);
   next();
 }

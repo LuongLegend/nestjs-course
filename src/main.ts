@@ -4,7 +4,7 @@ import { loggerMiddleware } from './middleware/loggerFn.middleware';
 async function bootstrap() {
   const PORT = process.env.NODE_ENV ?? 3000;
   const app = await NestFactory.create(AppModule);
-  app.use(loggerMiddleware);
+  //app.use(loggerMiddleware);
   await app.listen(PORT, () => console.log('app is running on port' + PORT));
 }
 

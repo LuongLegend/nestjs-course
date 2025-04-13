@@ -16,6 +16,7 @@ import { ValidateProductIdPipe } from './pipes/ValidateProductIdPipe.pipe';
 
 @Controller('product')
 @UsePipes(new ValidationPipe())
+@UsePipes(ValidateProductIdPipe)
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
@@ -25,7 +26,7 @@ export class ProductController {
   }
 
   @Get(':id')
-  getOne(@Param('id', ValidateProductIdPipe) id: number) {
+  getOne(@Param('id') id: number) {
     return this.productService.findOne(id);
   }
 

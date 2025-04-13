@@ -7,16 +7,14 @@ import {
   Patch,
   Post,
   Query,
+  ValidationPipe,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { AuthService } from '../auth/auth.service';
+import { CreateUserDto } from './dto/create-user.dto';
 
 @Controller('user')
 export class UserController {
-  constructor(
-    private readonly userService: UserService,
-    private readonly authService: AuthService,
-  ) {}
+  constructor(private readonly userService: UserService) {}
   @Get()
   findAll(@Query('q') query) {
     //return this.authService.login();
@@ -30,7 +28,7 @@ export class UserController {
   }
 
   @Post()
-  create(@Body() body: any) {
+  create(@Body(new ValidationPipe()) body: CreateUserDto) {
     return this.userService.createUser(body);
   }
 
