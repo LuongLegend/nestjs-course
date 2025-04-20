@@ -1,3 +1,4 @@
+import { Transform } from 'class-transformer';
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
 @Entity('product')
@@ -12,6 +13,7 @@ export class Product {
   description: string;
 
   @Column()
+  @Transform(({ value }) => `$${value}`, { toPlainOnly: true })
   price: number;
 
   @Column({

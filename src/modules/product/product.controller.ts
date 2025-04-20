@@ -8,15 +8,17 @@ import {
   Delete,
   ValidationPipe,
   UsePipes,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { Product } from '../../entities/product.entity';
 import { CreateProductDto } from './dto/create-product.dto';
 import { ValidateProductIdPipe } from './pipes/ValidateProductIdPipe.pipe';
+import { classToPlain, instanceToInstance, instanceToPlain, plainToInstance } from 'class-transformer';
 
 @Controller('product')
-@UsePipes(new ValidationPipe())
-@UsePipes(ValidateProductIdPipe)
+@UsePipes(new ValidationPipe({ transform: true, whitelist: true }))
+//@UsePipes(ValidateProductIdPipe)
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
@@ -26,13 +28,20 @@ export class ProductController {
   }
 
   @Get(':id')
-  getOne(@Param('id') id: number) {
+  getOne(@Param('id', ParseIntPipe) id: number) {
     return this.productService.findOne(id);
   }
 
   @Post()
-  createProduct(@Body() body: CreateProductDto) {
-    return this.productService.createProduct(body);
+  async createProduct(@Body() body: CreateProductDto) {
+    console.log(body);
+    const result = await this.productService.createProduct(body);
+    const dto = plainToInstance(CreateProductDto, result);
+
+    return instanceToPlain(dto);
+    //return instanceToPlain(result);
+    //const transformResult = instanceToInstance(CreateProductDto);
+    //return transformResult;
   }
 
   @Patch(':id')

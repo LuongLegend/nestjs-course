@@ -11,15 +11,15 @@ import { ClassModule } from './class/class.module';
 import { LoggerMiddleware } from './middleware/logger.middleware';
 import { UserModule } from './modules/user/user.module';
 import { AuthModule } from './modules/auth/auth.module';
-import { User } from './entities/user.entity';
 import { ProductModule } from './modules/product/product.module';
-import { Product } from './entities/product.entity';
+import { BookModule } from './modules/book/book.module';
 
 @Module({
   imports: [
     ClassModule,
     UserModule,
     AuthModule,
+    BookModule,
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: 'localhost',
@@ -27,8 +27,10 @@ import { Product } from './entities/product.entity';
       username: 'root',
       password: 'secret',
       database: 'nestjs',
-      entities: [User, Product],
+      autoLoadEntities: true,
+      entities: [__dirname + '**/*.entity{.js, .ts}'],
       synchronize: true,
+      logging: true,
     }),
     ProductModule,
   ],

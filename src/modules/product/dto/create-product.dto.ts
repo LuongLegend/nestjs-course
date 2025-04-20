@@ -1,3 +1,4 @@
+import { Exclude, Expose, Transform } from 'class-transformer';
 import {
   IsBoolean,
   IsOptional,
@@ -10,6 +11,8 @@ import {
   ValidatorConstraintInterface,
   ValidationArguments,
   Validate,
+  Min,
+  Max,
 } from 'class-validator';
 
 @ValidatorConstraint()
@@ -26,6 +29,7 @@ export class CreateProductDto {
   @IsString({ message: 'must be string hihi ' })
   @Length(5, 255)
   @Validate(Uppercase, { message: 'must be uppercase' })
+  @Expose()
   name: string;
 
   @IsString()
@@ -34,6 +38,10 @@ export class CreateProductDto {
 
   @IsNumber()
   @IsPositive()
+  @Min(0)
+  @Max(500)
+  @Transform(({ value }) => `$${value}`, { toPlainOnly: true })
+  @Expose()
   price: number;
 
   @IsBoolean()

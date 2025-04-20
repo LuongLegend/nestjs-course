@@ -30,7 +30,7 @@ export class ProductService {
   }
 
   async deleteProduct(id: number) {
-    const product = await this.productRepository.delete({ id });
-    return product;
+    const result = await this.productRepository.delete({ id });
+    return result.affected ? 'OK' : 'Nothing change';
   }
 }
