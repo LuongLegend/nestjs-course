@@ -5,15 +5,15 @@ export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ type: 'varchar', length: 20 })
   name: string;
 
-  @Column()
+  @Column({ nullable: false, type: 'varchar', unique: true })
   email: string;
 
-  @Column()
+  @Column({ nullable: true, type: 'varchar', length: 255 })
   password: string;
 
-  @Column({ default: true })
+  @Column({ name: 'is_active', default: true })
   isActive: boolean;
 }

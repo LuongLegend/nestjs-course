@@ -11,6 +11,7 @@ import {
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
+import { User } from '../../entities/user.entity';
 
 @Controller('user')
 export class UserController {
@@ -23,13 +24,14 @@ export class UserController {
   }
 
   @Get(':id')
-  getOneUser(@Param('id') id: number) {
-    return this.userService.getUserById(id);
+  async getOneUser(@Param('id') id: number): Promise<User | null> {
+    return await this.userService.getUserById(id);
   }
 
   @Post()
-  create(@Body(new ValidationPipe()) body: CreateUserDto) {
-    return this.userService.createUser(body);
+  async create(@Body(new ValidationPipe()) body: CreateUserDto): Promise<User> {
+    const result = await this.userService.createUser(body);
+    return result;
   }
 
   @Patch(':id')

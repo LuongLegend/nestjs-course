@@ -1,12 +1,14 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 
 import { User } from '../../entities/user.entity';
+import { CreateUserDto } from './dto/create-user.dto';
 
 @Injectable()
 export class UserService {
+  private logger = new Logger(UserService.name);
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
@@ -16,15 +18,32 @@ export class UserService {
     return this.userRepository.find();
   }
 
-  getUserById(id: number): Promise<User | null> {
-    return this.userRepository.findOneBy({
+  async getUserById(id: number): Promise<User | null> {
+    return await this.userRepository.findOneBy({
       id,
     });
   }
 
-  async createUser(user: Partial<User>): Promise<User> {
-    const result = this.userRepository.create(user);
-    return await this.userRepository.save(result);
+  async createUser(user: CreateUserDto): Promise<User> {
+    const { email } = user;
+    const checkEmail = await this.userRepository.findOneBy({
+      email,
+    });
+    if (checkEmail) {
+      throw new HttpException(
+        'Email is already register',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    try {
+      const newUser = this.userRepository.create(user);
+      const result = await this.userRepository.save(newUser);
+      return result;
+    } catch (error) {
+      this.logger.error(`${error?.message} ${JSON.stringify(user)}`);
+      throw new HttpException('Some error', HttpStatus.BAD_REQUEST);
+    }
   }
 
   async updateUser(id: number, user: Partial<User>): Promise<User | null> {
