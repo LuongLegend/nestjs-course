@@ -25,10 +25,11 @@ export class UserService {
   }
 
   async createUser(user: CreateUserDto): Promise<User> {
-    const { email } = user;
+    const { email, password } = user;
     const checkEmail = await this.userRepository.findOneBy({
       email,
     });
+
     if (checkEmail) {
       throw new HttpException(
         'Email is already register',
@@ -37,6 +38,8 @@ export class UserService {
     }
 
     try {
+      const hashPassword = await bcrypt.hash(password, 10);
+      user.password = hashPassword;
       const newUser = this.userRepository.create(user);
       const result = await this.userRepository.save(newUser);
       return result;
@@ -59,15 +62,5 @@ export class UserService {
 
   async getUserByEmail(email: string) {
     return await this.userRepository.findOneBy({ email });
-  }
-
-  async validateUser(email: string, password: string) {
-    const user = await this.getUserByEmail(email);
-    console.log(user);
-    if (!user) return null;
-    const status = bcrypt.compareSync(password, user.password);
-    console.log(status);
-    if (!status) return null;
-    return user;
   }
 }
